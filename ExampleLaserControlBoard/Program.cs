@@ -11,11 +11,22 @@ namespace ExampleLaserControlBoard
     {
         static void Main(string[] args)
         {
-            LaserControlBoard lcb = new LaserControlBoard();
-            lcb.OpenCommunication(9);
-            LaserControlGlobalState laserControlGlobalState = lcb.GetGlobalState();
-            lcb.SetInterlock(true);
-            Console.WriteLine(laserControlGlobalState.Interlock);
+            try
+            {
+                LaserControlBoard lcb = new LaserControlBoard();
+                if (lcb.OpenCommunication(3))
+                {
+                    lcb.SetInterlock(true);
+
+                    LaserControlGlobalState laserControlGlobalState = lcb.GetGlobalState();
+                    Console.WriteLine("Interlock: " + laserControlGlobalState.Interlock.ToString());
+                }
+            }
+            catch(OEILaserControlBoardException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            Console.ReadKey();
         }
     }
 }
