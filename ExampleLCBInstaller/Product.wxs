@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?define Name = "ExampleLCB"?>
+
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"><?define ExampleLaserControlBoard_TargetDir=$(var.ExampleLaserControlBoard.TargetDir)?>
+  
+  
+	<Product Id="*" Name="$(var.Name)" Language="1033" Version="2.1.0.0" Manufacturer="Optical Engines" UpgradeCode="efe4f2e1-377a-4eb4-841c-1c27d610647e">
+		<Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
+    <Icon Id="Icon.ico" SourceFile="$(var.ProjectDir)icon.ico" />
+    <Property Id="ARPPRODUCTICON" Value="Icon.ico" />
+    
+    <WixVariable Id="WixUIBannerBmp" Value="Images\installer_top-banner.bmp" />
+    <WixVariable Id="WixUIDialogBmp" Value="Images\installer_background.bmp" />
+    <WixVariable Id="WixUILicenseRtf" Value="$(var.ProjectDir)\license.rtf" />
+
+    <UI Id="MyWixUI_InstallDir">
+      <UIRef Id="WixUI_InstallDir" />
+      <UIRef Id="WixUI_ErrorProgressText" />
+
+      <DialogRef Id="CustomizeInstallDlg"/>
+
+      <Publish Dialog="VerifyReadyDlg" Control="Back" Event="NewDialog" Value="CustomizeInstallDlg">NOT Installed</Publish>
+      <Publish Dialog="InstallDirDlg" Control="Next" Event="NewDialog" Value="CustomizeInstallDlg" Order="4">WIXUI_DONTVALIDATEPATH OR WIXUI_INSTALLDIR_VALID="1"</Publish>
+      
+    </UI>
+    
+
+    <Property Id="INSTALLDESKTOPSHORTCUT" Value="1"/>
+    <Property Id="INSTALLDRIVERS" Value="1"/>
+
+    <Property Id="WIXUI_INSTALLDIR" Value="MANUFACTURERFOLDER" />
+    
+		<MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+		<MediaTemplate EmbedCab="yes" />
+
+		<Feature Id="ProductFeature" Title="ExampleLCB" Level="1">
+			<ComponentGroupRef Id="ProductComponents" />
+      <ComponentRef Id="ApplicationShortcut" />
+      <ComponentRef Id="ApplicationShortcutDesktop" />
+			<ComponentGroupRef Id="Files_files" />
+		</Feature>
+
+    
+	</Product>
+
+  <Fragment>
+    <UI>
+      <Dialog Id="CustomizeInstallDlg" Width="370" Height="270" Title="!(loc.CustomInstall_Title)" NoMinimize="yes">
+
+        <Control Id="DesktopShortcutCheckBox" Type="CheckBox"
+                 X="30" Y="90" Width="290" Height="17"
+                 Property="INSTALLDESKTOPSHORTCUT" CheckBoxValue="1"
+                 Text="!(loc.CustomizeInstallSelectShortcut)"/>
+        <Control Id="InstallDriversCheckBox" Type="CheckBox"
+                X="30" Y="120" Width="290" Height="17"
+                 Property="INSTALLDRIVERS" CheckBoxValue="1"
+                 Text="!(loc.CustomizeInstallSelectDrivers)"/>
+        
+      <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="&amp;Back">
+        <Publish Event="NewDialog" Value="InstallDirDlg">1</Publish>
+      </Control>
+      <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="&amp;Next">
+        <Publish Event="SpawnWaitDialog" Value="WaitForCostingDlg">CostingComplete = 1</Publish>
+        <Publish Event="NewDialog" Value="VerifyReadyDlg"></Publish>
+      </Control>
+      <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="Cancel">
+        <Publish Event="SpawnDialog" Value="CancelDlg">1</Publish>
+      </Control>
+      <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" TabSkip="no" Text="WixUI_Bmp_Banner" />
+      <Control Id="Description" Type="Text" X="25" Y="23" Width="280" Height="15" Transparent="yes" NoPrefix="yes">
+        <Text>!(loc.CustomizeInstallEnterCustInfo)</Text>
+      </Control>
+      <Control Id="BottomLine" Type="Line" X="0" Y="234" Width="370" Height="0" />
+      <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Transparent="yes" NoPrefix="yes">
+        <Text>{\WixUI_Font_Title}!(loc.CustomizeInstallCustInfo)</Text>
+      </Control>
+      <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />
+
+        
+    </Dialog>
+  </UI>
+  </Fragment>
+  
+
+	<Fragment>
+		<Directory Id="TARGETDIR" Name="SourceDir">
+			<Directory Id="ProgramFilesFolder">
+        <Directory Id="MANUFACTURERFOLDER" Name="Optical Engines">
+					<Directory Id="INSTALLFOLDER" Name="ExampleLCB">
+					  <Directory Id="Files" Name="Files" />
+					</Directory>
+        </Directory>
+			</Directory>
+      <Directory Id="ProgramMenuFolder">
+        <Directory Id="ApplicationProgramsFolder" Name="ExampleLCB" />
+      </Directory>
+      <Directory Id="DesktopFolder" Name="Desktop" />
+		</Directory>
+    
+	</Fragment>
+  
+
+	<Fragment>
+		<ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
+			<Component Id="ExampleLaserControlBoard.exe" Guid="310cc98f-e1c2-487a-b2f7-f9b08f42cd26">
+			  <File Id="ExampleLaserControlBoard.exe" Name="ExampleLaserControlBoard.exe" Source="$(var.ExampleLaserControlBoard_TargetDir)ExampleLaserControlBoard.exe" />
+			</Component>
+			<Component Id="ExampleLaserControlBoard.exe.config" Guid="064c6d47-cefd-44ed-83b3-1f0ced521559">
+			  <File Id="ExampleLaserControlBoard.exe.config" Name="ExampleLaserControlBoard.exe.config" Source="$(var.ExampleLaserControlBoard_TargetDir)ExampleLaserControlBoard.exe.config" />
+			</Component>
+			<Component Id="OEI.dll" Guid="8dd88de9-4eff-4ab4-8287-9573aad3e402">
+			  <File Id="OEI.dll" Name="OEI.dll" Source="$(var.ExampleLaserControlBoard_TargetDir)OEI.dll" />
+			</Component>
+			<Component Id="development_icon_131032.ico" Guid="e512a166-3c4e-459f-a17a-86bb956d0e63">
+			  <File Id="development_icon_131032.ico" Name="development_icon_131032.ico" Source="$(var.ExampleLaserControlBoard_TargetDir)development_icon_131032.ico" />
+			</Component>
+		</ComponentGroup>
+	</Fragment>
+
+  <Fragment>
+    <DirectoryRef Id="ApplicationProgramsFolder">
+      <Component Id="ApplicationShortcut" Guid="fd7798ad-0419-4043-a116-3783051ff28c">
+        <Shortcut Id="ApplicationStartMenuShortcut" Name="ExampleLCB" Description="Example LaserControlBoard" Target="[INSTALLFOLDER]ExampleLaserControlBoard.exe" WorkingDirectory="INSTALLFOLDER" />
+        <RemoveFolder Id="RemoveApplicationProgramsFolder" Directory="ApplicationProgramsFolder" On="uninstall" />
+        <RegistryValue Root="HKCU" Key="Software\ExampleLCB" Name="installed" Type="integer" Value="1" KeyPath="yes" />
+      </Component>
+    </DirectoryRef>
+    <DirectoryRef Id="DesktopFolder">
+      <Component Id="ApplicationShortcutDesktop" Guid="89bb5450-c5f4-46c5-9b75-bde9204fbb55">
+        <Condition>INSTALLDESKTOPSHORTCUT</Condition>
+        <Shortcut Id="ApplicationDesktopShortcut" Name="ExampleLCB" Description="Example LaserControlBoard" Target="[INSTALLFOLDER]ExampleLaserControlBoard.exe" WorkingDirectory="INSTALLFOLDER" />
+        <RemoveFolder Id="RemoveDesktopFolder" Directory="DesktopFolder" On="uninstall" />
+        <RegistryValue Root="HKCU" Key="Software\ExampleLCB" Name="installed" Type="integer" Value="1" KeyPath="yes" />
+      </Component>
+    </DirectoryRef>
+  </Fragment>
+
+
+  <Fragment>
+    <ComponentGroup Id="Files_files" Directory="Files">
+      <Component Id="Files_TextFile1.txt" Guid="89303102-4a94-4e37-8cf7-6a09048d9930">
+        <File Id="Files_TextFile1.txt" Name="TextFile1.txt" Source="$(var.ExampleLaserControlBoard_TargetDir)Files\TextFile1.txt" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+</Wix>

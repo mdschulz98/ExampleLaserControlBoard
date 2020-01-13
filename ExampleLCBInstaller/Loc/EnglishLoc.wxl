@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WixLocalization Culture="en-us" xmlns="http://schemas.microsoft.com/wix/2006/localization">
+	<String Id="CustomInstall_Title" Overridable="yes">[ProductName] Setup</String>
+	<String Id="CustomizeInstallEnterCustInfo" Overridable="yes">Modify the installation</String>
+	<String Id="CustomizeInstallCustInfo" Overridable="yes">[ProductName] Setup Options</String>
+  <String Id="CustomizeInstallSelectShortcut" Overridable="yes">Create a shortcut for [ProductName] on the desktop</String>
+  <String Id="CustomizeInstallSelectDrivers" Overridable="yes">Install necessary arduino driver</String>
+</WixLocalization>
